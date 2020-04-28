@@ -3,9 +3,11 @@ This is the simulation model of mecanum in gazebo environment.
 Proceed as follows.
 
 1. Load the mecanum.
+
 roslaunch mecanum_sim mecanum.launch
 
 2. Control the speed of the mecanum.
+
 rostopic pub /cmd_vel geometry_msgs/Twist "linear:
   x: 1.0
   y: 0.0
