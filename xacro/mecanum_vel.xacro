@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro"
+       name="mecanum" >
+
+  <xacro:property name="base_length" value="1.1"/>
+  <xacro:property name="base_width" value="0.6"/>
+  <xacro:property name="base_height" value="0.4"/>
+
+  <xacro:include filename="$(find mecanum_sim)/xacro/common.gazebo.xacro" />
+
+  <link name="mec_base_link">
+    <inertial>
+      <mass value="2000"/>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    <inertia ixx="565.2232699207" ixy="0.09719934438" ixz="1.293988226423" iyy="566.9473158652" iyz="0.07379583694" izz="566.83196351726"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0.25" rpy="0 0 0"/>
+      <geometry>
+         <mesh filename="package://mecanum_sim/meshes/mec.dae" scale="1 1 1"/>  
+      </geometry>   
+
+      <!-- if the gazebo fails to load, please change to mecanum_s.dae. -->
+      <!-- <origin xyz="0.05 0 0.065" rpy="3.141 0 3.141"/>
+      <geometry> 
+         <mesh filename="package://mecanum_sim/meshes/mecanum_s.dae" scale="0.087 0.087 0.087"/>   
+      </geometry> -->
+      <material name="blue">  
+				<color rgba="0.3 0.5 0.6 1"/>  
+			</material> 
+    </visual>
+    <collision>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <geometry>      
+         <box size="${base_length} ${base_width} ${base_height} "/> 
+      </geometry>
+
+      <!-- <origin xyz="0 0 0.25" rpy="0 0 0"/>
+      <geometry>
+         <mesh filename="package://mecanum_sim/meshes/mec.stl" scale="0 0 0"/>  
+      </geometry>      -->
+
+    </collision>
+  </link> 
+ 
+  <gazebo reference="mec_base_link">
+    <gravity>true</gravity>
+    <self_collide>false</self_collide>
+  </gazebo>
+  
+  <link name="dummy">
+   <origin rpy="0 0 0" xyz="0 0 0"/>
+   </link>
+  <joint name="dummy_joint" type="fixed">
+     <origin rpy="0 0 0" xyz="0 0 0"/>
+     <parent link="dummy"/>
+     <child link="mec_base_link"/>
+  </joint>
+
+
+  <gazebo>
+    <plugin filename="libgazebo_ros_planar_move.so" name="mecanum_controller">
+      <commandTopic>cmd_vel</commandTopic>
+      <odometryTopic>odom</odometryTopic>
+      <odometryFrame>odom</odometryFrame>
+      <odometryRate>20.0</odometryRate>
+      <robotBaseFrame>dummy</robotBaseFrame>
+    </plugin>
+  </gazebo>
+ 
+</robot>
